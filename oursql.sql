@@ -40,3 +40,40 @@ CREATE TABLE book_author (
     FOREIGN KEY (book_id) REFERENCES book(book_id),
     FOREIGN KEY (author_id) REFERENCES author(author_id)
 );
+CREATE TABLE Customer(
+	customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name varchar (25) NOT NULL,
+    customer_surname varchar (25) NOT NULL,
+    customer_email varchar (25) UNIQUE
+);
+CREATE TABLE Customer_Address(
+	customer_address_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    address_status_id INT,
+    address_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+	FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id),
+    FOREIGN KEY (address_id) REFERENCES address(address_id)
+);
+CREATE TABLE Address_status(
+	address_status_id INT AUTO_INCREMENT PRIMARY KEY,
+    address_status_name varchar(50) NOT NULL
+);
+CREATE TABLE Address(
+	address_id INT AUTO_INCREMENT PRIMARY KEY,
+    address_name varchar(50),
+    address_street varchar(30),
+    address_town varchar(50),
+    address_postal_code varchar(20),
+    address_state_province varchar (30),
+    address_status_id INT,
+    country_id INT,
+    customer_id INT,
+    FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id),
+    FOREIGN KEY (country_id) REFERENCES country (country_id),
+	FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+);
+CREATE TABLE country(
+	country_id INT AUTO_INCREMENT PRIMARY KEY,
+    country_name varchar (30) NOT NULL
+);
