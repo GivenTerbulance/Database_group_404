@@ -90,5 +90,22 @@ CREATE TABLE order_line(
      book_id INT,
      FOREIGN KEY (customer_order_id) REFERENCES customer_order(customer_order_id),
 	 FOREIGN KEY (book_id) REFERENCES book(book_id)
-
+     );
+CREATE TABLE shipping_order(
+	shipping_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    method_name VARCHAR(20) NOT NULL,
+    cost DEC (10,2),
+    customer_id INT,
+    country_id INT,
+    order_status_id INT,
+    address_id INT,
+	FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+	FOREIGN KEY (country_id) REFERENCES country(country_id),
+	FOREIGN KEY (order_status_id) REFERENCES order_status(order_status_id),
+	FOREIGN KEY (address_id) REFERENCES address(address_id)
+);
+CREATE TABLE order_history(
+	order_id INT
+);
      
+
