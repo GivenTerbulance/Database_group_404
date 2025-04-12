@@ -1,6 +1,6 @@
+DROP DATABASE IF EXISTS BookStore;
 CREATE DATABASE BookStore;
 USE BookStore;
-
 CREATE TABLE author (
     author_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -53,9 +53,9 @@ CREATE TABLE Customer_Address(
     address_id INT,
     FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
 	FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id),
-    FOREIGN KEY (address_id) REFERENCES address(address_id)
+    FOREIGN KEY (address_id) REFERENCES Address(address_id)
 );
-CREATE TABLE Address_status(
+CREATE TABLE address_status(
 	address_status_id INT AUTO_INCREMENT PRIMARY KEY,
     address_status_name varchar(50) NOT NULL
 );
@@ -79,11 +79,15 @@ CREATE TABLE country(
 );
 CREATE TABLE customer_order(
 	customer_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    shipping_method_id INT,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     order_quantity INT NOT NULL,
     price_total INT NOT NULL,
-    FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id)
-    );
+    FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+    FOREIGN KEY (shipping_method_id) REFERENCES shipping_method(shipping_method_id)
+);
 CREATE TABLE order_line(
      order_line_id INT AUTO_INCREMENT PRIMARY KEY,
      customer_order_id INT,
@@ -105,7 +109,18 @@ CREATE TABLE shipping_order(
 	FOREIGN KEY (address_id) REFERENCES address(address_id)
 );
 CREATE TABLE order_history(
-	order_id INT
+	order_history_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    status_id INT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES cust_order(order_id),
+    FOREIGN KEY (status_id) REFERENCES order_status(status_id)
 );
-     
+CREATE TABLE order_status (
+    status_id INT AUTO_INCREMENT PRIMARY KEY,
+    status_name VARCHAR(50) NOT NULL
+);
+
+SHOW TABLES;
+DROP TABLE shipping_order;
 
