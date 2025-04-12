@@ -77,3 +77,18 @@ CREATE TABLE country(
 	country_id INT AUTO_INCREMENT PRIMARY KEY,
     country_name varchar (30) NOT NULL
 );
+CREATE TABLE customer_order(
+	customer_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    order_quantity INT NOT NULL,
+    price_total INT NOT NULL,
+    FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id)
+    );
+CREATE TABLE order_line(
+     order_line_id INT AUTO_INCREMENT PRIMARY KEY,
+     customer_order_id INT,
+     book_id INT,
+     FOREIGN KEY (customer_order_id) REFERENCES customer_order(customer_order_id),
+	 FOREIGN KEY (book_id) REFERENCES book(book_id)
+
+     
