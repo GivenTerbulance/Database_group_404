@@ -2,6 +2,7 @@
 
 Database Design & Programming with SQL - BookStore Project 📚
 Collaborators in this project are:
+
 1.Nontando Myoli
 2.Given Teboho Ikaneng
 3.Loid Aran
