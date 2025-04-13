@@ -1,3 +1,4 @@
+
 DROP DATABASE IF EXISTS BookStore;
 CREATE DATABASE BookStore;
 USE BookStore;
@@ -47,7 +48,7 @@ CREATE TABLE Customer(
     customer_email varchar (25) UNIQUE
 );
 CREATE TABLE Customer_Address(
-	customer_address_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_address_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
     address_status_id INT,
     address_id INT,
@@ -56,7 +57,7 @@ CREATE TABLE Customer_Address(
     FOREIGN KEY (address_id) REFERENCES Address(address_id)
 );
 CREATE TABLE address_status(
-	address_status_id INT AUTO_INCREMENT PRIMARY KEY,
+    address_status_id INT AUTO_INCREMENT PRIMARY KEY,
     address_status_name varchar(50) NOT NULL
 );
 CREATE TABLE Address(
@@ -71,19 +72,21 @@ CREATE TABLE Address(
     customer_id INT,
     FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id),
     FOREIGN KEY (country_id) REFERENCES country (country_id),
-	FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
 );
 CREATE TABLE country(
-	country_id INT AUTO_INCREMENT PRIMARY KEY,
+    country_id INT AUTO_INCREMENT PRIMARY KEY,
     country_name varchar (30) NOT NULL
 );
 CREATE TABLE customer_order(
-	customer_order_id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id INT,
+    customer_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,  
+    address_status_id INT,
     shipping_method_id INT,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     order_quantity INT NOT NULL,
     price_total INT NOT NULL,
+  
     FOREIGN KEY (address_status_id) REFERENCES address_status(address_status_id),
     FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
     FOREIGN KEY (shipping_method_id) REFERENCES shipping_method(shipping_method_id)
@@ -95,25 +98,26 @@ CREATE TABLE order_line(
      FOREIGN KEY (customer_order_id) REFERENCES customer_order(customer_order_id),
 	 FOREIGN KEY (book_id) REFERENCES book(book_id)
      );
-CREATE TABLE shipping_order(
-	shipping_order_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE shipping_method(
+	shipping_method_id INT AUTO_INCREMENT PRIMARY KEY,
     method_name VARCHAR(20) NOT NULL,
     cost DEC (10,2),
     customer_id INT,
     country_id INT,
+    status_id INT,
     order_status_id INT,
     address_id INT,
 	FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
 	FOREIGN KEY (country_id) REFERENCES country(country_id),
-	FOREIGN KEY (order_status_id) REFERENCES order_status(order_status_id),
+	FOREIGN KEY (status_id) REFERENCES order_status(status_id),
 	FOREIGN KEY (address_id) REFERENCES address(address_id)
 );
 CREATE TABLE order_history(
 	order_history_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT,
+    customer_order_id INT,
     status_id INT,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_id) REFERENCES cust_order(order_id),
+    FOREIGN KEY (customer_order_id) REFERENCES customer_order(customer_order_id),
     FOREIGN KEY (status_id) REFERENCES order_status(status_id)
 );
 CREATE TABLE order_status (
@@ -123,4 +127,43 @@ CREATE TABLE order_status (
 
 SHOW TABLES;
 DROP TABLE shipping_order;
+SELECT GROUP_CONCAT(table_name SEPARATOR ', ') 
+FROM information_schema.tables 
+WHERE table_schema = DATABASE();
+
+-- Creating User Roles and Permissions 
+CREATE USER 'readonly_user'@'localhost' IDENTIFIED BY 'readonly123';
+
+GRANT SELECT ON BookStoreDB.* TO 'readonly_user'@'localhost';
+
+CREATE USER 'admin_user'@'localhost' IDENTIFIED BY 'adminpass123';
+GRANT ALL PRIVILEGES ON BookStoreDB.* TO 'admin_user'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Sample data for tesing(Inserting our samble data) 
+-- Authors
+INSERT INTO author (name, bio) VALUES ('J.K. Rowling', 'Author of Harry Potter');
+INSERT INTO author (name, bio) VALUES ('George Orwell', 'Author of 1984');
+
+
+-- Books
+INSERT INTO Book (title, author_id, price, quantity)
+VALUES ('Harry Potter and the Sorcerer\'s Stone', 1, 1, 19.99, 100),
+       ('1984', 2, 2, 15.50, 50);
+
+-- Customers
+INSERT INTO Customers (full_name, email, phone)
+VALUES ('Alice Johnson', 'alice@example.com', '1234567890');
+
+-- Orders
+INSERT INTO Orders (customer_id) VALUES (1);
+
+-- OrderDetails
+INSERT INTO OrderDetails (order_id, book_id, quantity, price)
+VALUES (1, 1, 2, 19.99);
+
+
+
+
+
 
